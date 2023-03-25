@@ -1,5 +1,7 @@
 #! /usr/bin/env node
+console.clear();
 import inquirer from "inquirer";
+import chalk from "chalk";
 import chalkAnimation from "chalk-animation";
 const stopTime = () => {
     return new Promise((res) => {
@@ -18,25 +20,41 @@ async function askQuestions() {
         {
             type: "list",
             name: "operator",
-            message: "Which operation do you want to perform? \n",
+            message: "\nWhich operation do you want to perform? \n",
             choices: ["Add", "Substract", "Multiply", "Divide"]
         },
         {
-            type: "number",
+            type: "input",
             name: "num1",
-            message: "Enter number 1: "
+            message: "Enter number 1: ",
+            validate(value) {
+                const pass = isNaN(value);
+                if (pass) {
+                    return chalk.bgRed("Please enter a valid number.");
+                }
+                else
+                    return true;
+            }
         },
         {
-            type: "number",
+            type: "input",
             name: "num2",
-            message: "Enter number 2: "
+            message: "Enter number 2: ",
+            validate(value) {
+                const pass = isNaN(value);
+                if (pass) {
+                    return chalk.bgRed("Please enter a valid number.");
+                }
+                else
+                    return true;
+            }
         }
     ])
         .then((answers) => {
         // Use user feedback for... whatever!!
         //   console.log(answers);
         if (answers.operator == "Add") {
-            console.log(answers.operator + " result = " + (answers.num1 + answers.num2));
+            console.log(answers.operator + " result = " + (parseInt(answers.num1) + parseInt(answers.num2)));
         }
         else if (answers.operator == "Substract") {
             console.log(answers.operator + " result = " + (answers.num1 - answers.num2));
@@ -55,12 +73,12 @@ async function startAgain() {
         await askQuestions();
         var again = await inquirer.prompt([
             {
-                type: "input",
+                type: "confirm",
                 name: "restart",
                 message: "Do you wish to restart calculator? Y/N ?"
             }
         ]);
-    } while (again.restart == "Y" || again.restart == "y");
+    } while (again.restart == true);
 }
 ;
 await startAgain();
